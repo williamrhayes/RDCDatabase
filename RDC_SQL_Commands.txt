@@ -1,0 +1,146 @@
+--- Rwanda Deluxe Coffee's Official SQL Database ---
+
+--- Entities ---
+
+CREATE TABLE employees (
+    
+    employee_id VARCHAR(10) PRIMARY KEY,
+
+    first_name VARCHAR(25) NOT NULL,
+    last_name VARCHAR(25) NOT NULL,
+    join_date VARCHAR(25) NOT NULL,
+    salary DECIMAL(17, 2) NOT NULL,
+    title VARCHAR(25) NOT NULL,
+    role VARCHAR(25)
+
+);
+
+CREATE TABLE business_connections(
+
+    bconnection_id VARCHAR(10) PRIMARY KEY,
+
+    first_name VARCHAR(25) NOT NULL,
+    last_name VARCHAR(25) NOT NULL,
+    expertise VARCHAR(25) NOT NULL,
+    contact_type VARCHAR(25) NOT NULL,
+    contact_info VARCHAR(75) NOT NULL,
+    affiliation VARCHAR(25)
+
+);
+
+CREATE TABLE business_expenses(
+    
+    expense_id VARCHAR(10) PRIMARY KEY,
+
+    expense_source VARCHAR(25) NOT NULL,
+    expense_name VARCHAR(25) NOT NULL,
+    charged_on DATE NOT NULL,
+    next_payment_due DATE
+
+);
+
+CREATE TABLE customers(
+
+    customer_id VARCHAR(10) PRIMARY KEY,
+
+    first_name VARCHAR(25) NOT NULL,
+    last_name VARCHAR(25) NOT NULL,
+    contact_type VARCHAR(25) NOT NULL,
+    contact_info VARCHAR(75)
+
+);
+
+CREATE TABLE products(
+
+    product_id VARCHAR(10) PRIMARY KEY,
+
+    product_name VARCHAR(50) NOT NULL,
+    product_type VARCHAR(25) NOT NULL,
+    supplier VARCHAR(25) NOT NULL,
+    purchase_price DECIMAL(8,2) NOT NULL,
+    selling_price DECIMAL(8,2) NOT NULL,
+    quantity INT NOT NULL,
+    size DOUBLE(7,2)
+
+);
+
+--- Relationships ---
+
+CREATE TABLE met_with(
+
+    -- These foreign keys directly reference data from other tables,
+    -- therefore it is probably good practice if we add the foreign key
+    -- constraint. The primary key of this table will consist of the 
+    -- employee_id, bconnections_id, and meeting_date used together.
+
+    employee_id VARCHAR(10) NOT NULL,
+    bconnection_id VARCHAR(10) NOT NULL,
+    meeting_date DATE NOT NULL,
+    description VARCHAR(150) NOT NULL,
+    notes VARCHAR(100),
+
+    -- Foreign keys need to be specified separately in SQL,
+    -- otherwise I get a syntax error
+
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id),
+    FOREIGN KEY (bconnection_id) REFERENCES business_connections(bconnection_id)
+
+);
+
+
+
+CREATE TABLE paid_for(
+
+    payment_id VARCHAR(10) PRIMARY KEY,
+
+    employee_id VARCHAR(10) NOT NULL,
+    payment_date DATE NOT NULL,
+    expense_aiwt DECIMAL(8,2) NOT NULL,
+
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+
+);
+
+CREATE TABLE sold_by(
+
+    sale_id VARCHAR(10) PRIMARY KEY,
+
+    employee_id VARCHAR(10) NOT NULL,
+    customer_id VARCHAR(10) NOT NULL,
+    revenue_generated DECIMAL(8,2) NOT NULL,
+    method VARCHAR(50) NOT NULL,
+    sale_date DATE NOT NULL,
+
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id),
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+
+);
+
+CREATE TABLE orders(
+    
+    order_id VARCHAR(10) PRIMARY KEY,
+
+    customer_id VARCHAR(10) NOT NULL,
+    product_id VARCHAR(10) NOT NULL,
+    order_date DATE NOT NULL,
+    product_name_aiwt VARCHAR(50) NOT NULL,
+    purchase_quantity INT NOT NULL,
+    payment_method VARCHAR(25) NOT NULL,
+    price_aiwt DECIMAL(8,2) NOT NULL,
+    sales_tax DECIMAL(8,2) NOT NULL,
+    payment_fees DECIMAL(8,2) NOT NULL,
+    payment_fees_desc DECIMAL(8,2),
+    notes VARCHAR(100),
+
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+
+);
+
+-- Now that the database is fully constructed, we can add in some essential
+-- data that is going to remain relatively constant (Data that won't be updated
+-- by our budget file)
+
+INSERT INTO employees
+VALUES('EMP0001', 'William', 'Hayes', DATE '2020-06-17', 0, 'Co-Founder and CTO', 'Research and Development'),
+      ('EMP0002', 'Gaston', 'Niyitegeka', DATE '2020-06-17', 0, 'Founder and CEO', 'Sales');
