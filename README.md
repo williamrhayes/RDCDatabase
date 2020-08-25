@@ -3,7 +3,7 @@ Learning how to design a relational database for my company!
 
 ---------------------------------------------------------------
 *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** 
-Step 1: Drafting a Database Design (Formally Database Schema)
+Step 1: Drafting a Database Design
 *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** 
 
 For this project, I am heavily referencing Malcom Hamer's book
@@ -100,12 +100,41 @@ The database catalog,
 
 specifies the data type of each attribute, whether that 
 attribute is constrained (FALSE if it can accept NULL values), 
-and gives an example of an entry for the table.
+and gives an example of an entry for the table. 
 
 ---------------------------------------------------------------
 *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** 
 Step 3: Implementing this Database Design in SQL
 *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** 
+
+I had already tested out building a toy database before so 
+establishing a new database for the company was relatively
+easy. All I had to do was establish a new database with the 
+MySQL command client (which I appropriately named 'rdc'), then
+use PopSQL to implement my SQL code!
+
+As I was creating tables in MySQL I found the database
+catalog pretty handy. I could just reference the catalog 
+as I was filling out information types. While I was doing this
+I found out that the "MONEY" data type was only available in
+Transact-SQL, so I decided to use the DECIMAL data type instead.
+From what I understand, this data type is perfectly safe to use
+with money (unlike floats).
+
+Once I had corrected all the typos and squared away all the 
+variable names, I inserted myself and my business partner into
+our database! I wasn't sure if there was a SQL-specific file
+format, so all code used to construct the database can be 
+found in the 
+
+"RDC_SQL_Commands.txt" 
+
+file.
+
+Next we need to migrate our company's excel data to our MySQL 
+server. Hopefully we can accomplish this in a way that can
+automate SQL commands for future reports.
+
 ---------------------------------------------------------------
 *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** 
 Step 4: Migrating data from Excel to our SQL server
