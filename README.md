@@ -139,6 +139,26 @@ automate SQL commands for future reports.
 *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** 
 Step 4: Migrating data from Excel to our SQL server
 *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** 
+
+This is definetly going to be the hardest part of establishing 
+our new database.
+
+I had to decide which parts of the information from our Excel
+sheet I wanted to automate and which could be manually inserted. 
+While I initially tried to automate the update of each individual 
+table, I found that some tables (such as products) were easier to
+just add to directly in SQL. I tried setting up an automated system 
+for keeping track of products, but this was just too much effort to
+keep track of 7 different products.
+
+I decided that creating our customer database would drastically
+benefit from automation, and found out that we have about ~70 total
+unique customers. My updates will be featured in the
+
+"py_2_SQL.py"
+
+Python script!
+
 ---------------------------------------------------------------
 *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** 
 Step 5: Maintaining our SQL database
