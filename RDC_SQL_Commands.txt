@@ -46,9 +46,16 @@ CREATE TABLE customers(
     first_name VARCHAR(25) NOT NULL,
     last_name VARCHAR(25) NOT NULL,
     contact_type VARCHAR(25) NOT NULL,
-    contact_info VARCHAR(75)
+    contact_info VARCHAR(75),
+    shipping_address VARCHAR(50),
+    preferences VARCHAR(100)
 
 );
+
+-- Used to add columns I initially forgot to add during table creation
+-- ALTER TABLE customers
+-- ADD COLUMN shipping_address VARCHAR(50),
+-- ADD COLUMN preferences VARCHAR(50);
 
 CREATE TABLE products(
 
@@ -72,7 +79,7 @@ CREATE TABLE met_with(
     -- therefore it is probably good practice if we add the foreign key
     -- constraint. The primary key of this table will consist of the 
     -- employee_id, bconnections_id, and meeting_date used together.
-
+    
     employee_id VARCHAR(10) NOT NULL,
     bconnection_id VARCHAR(10) NOT NULL,
     meeting_date DATE NOT NULL,
@@ -139,8 +146,27 @@ CREATE TABLE orders(
 
 -- Now that the database is fully constructed, we can add in some essential
 -- data that is going to remain relatively constant (Data that won't be updated
--- by our budget file)
+-- frequently by our budget file)
 
 INSERT INTO employees
 VALUES('EMP0001', 'William', 'Hayes', DATE '2020-06-17', 0, 'Co-Founder and CTO', 'Research and Development'),
       ('EMP0002', 'Gaston', 'Niyitegeka', DATE '2020-06-17', 0, 'Founder and CEO', 'Sales');
+
+-- Our number of products will not substantially change, so for now we will
+-- enter them manually 
+
+INSERT INTO products
+VALUES("PDCT0001", "Gorillas Medium Roast Ground", "Coffee","Gorillas Coffee", 0.00, 16.00, 73, 16.00),
+      ("PDCT0002", "Rwanda Bean Dark Roast Whole Bean", "Coffee", "Rwanda Bean Coffee", 0.00, 14, 8, 12.00),
+      ("PDCT0003", "Rwanda Bean Medium Roast Whole Bean", "Coffee", "Rwanda Bean Coffee", 0.00, 14, 0, 12.00),
+      ("PDCT0004", "Rwanda Bean Light Roast Whole Bean", "Coffee", "Rwanda Bean Coffee", 0.00, 14, 2, 12.00),
+      ("PDCT0005", "Rwanda Bean Decaf Whole Bean", "Coffee", "Rwanda Bean Coffee", 0.00, 14, 4, 12.00),
+      ("PDCT0006", "Rwanda Bean Espresso Whole Bean", "Coffee", "Rwanda Bean Coffee", 0.00, 14, 3, 12.00),
+      ("PDCT0007", "Rwanda Bean Light Roast Ground", "Coffee", "Rwanda Bean Coffee", 0.00, 14, 1, 12.00);
+
+-- It is useful to have a reference customer to build off of to test my application. Therefore, I will
+-- Manually add myself here to get the framework started.
+INSERT INTO customers
+VALUES('CU0001', 'Billy', 'Hayes', 'in_person', NULL, '123 main st. 72372, Conway, AR', "medium roast, dark roast, whole bean");
+
+SELECT * FROM customers
