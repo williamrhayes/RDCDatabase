@@ -13,7 +13,7 @@ def main():
     mydb = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='ratehufapacc',
+        password='password',
         database='rdc'
     )
 
