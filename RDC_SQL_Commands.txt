@@ -32,8 +32,9 @@ CREATE TABLE business_expenses(
     
     expense_id VARCHAR(10) PRIMARY KEY,
 
-    expense_source VARCHAR(25) NOT NULL,
-    expense_name VARCHAR(25) NOT NULL,
+    expense_source VARCHAR(100) NOT NULL,
+    expense_name VARCHAR(100) NOT NULL,
+    total_cost DECIMAL(17,2) NOT NULL,
     charged_on DATE NOT NULL,
     next_payment_due DATE
 
@@ -156,17 +157,15 @@ VALUES('EMP0001', 'William', 'Hayes', DATE '2020-06-17', 0, 'Co-Founder and CTO'
 -- enter them manually 
 
 INSERT INTO products
-VALUES("PDCT0001", "Gorillas Medium Roast Ground", "Coffee","Gorillas Coffee", 0.00, 16.00, 73, 16.00),
-      ("PDCT0002", "Rwanda Bean Dark Roast Whole Bean", "Coffee", "Rwanda Bean Coffee", 0.00, 14, 8, 12.00),
-      ("PDCT0003", "Rwanda Bean Medium Roast Whole Bean", "Coffee", "Rwanda Bean Coffee", 0.00, 14, 0, 12.00),
-      ("PDCT0004", "Rwanda Bean Light Roast Whole Bean", "Coffee", "Rwanda Bean Coffee", 0.00, 14, 2, 12.00),
-      ("PDCT0005", "Rwanda Bean Decaf Whole Bean", "Coffee", "Rwanda Bean Coffee", 0.00, 14, 4, 12.00),
-      ("PDCT0006", "Rwanda Bean Espresso Whole Bean", "Coffee", "Rwanda Bean Coffee", 0.00, 14, 3, 12.00),
-      ("PDCT0007", "Rwanda Bean Light Roast Ground", "Coffee", "Rwanda Bean Coffee", 0.00, 14, 1, 12.00);
+VALUES("PDCT0001", "Gorillas Medium Roast Ground", "Coffee","Gorillas Coffee", 9.50, 16.00, 73, 16.00),
+      ("PDCT0002", "Rwanda Bean Dark Roast Whole Bean", "Coffee", "Rwanda Bean Coffee", 8.52, 14, 8, 12.00),
+      ("PDCT0003", "Rwanda Bean Medium Roast Whole Bean", "Coffee", "Rwanda Bean Coffee", 8.52, 14, 0, 12.00),
+      ("PDCT0004", "Rwanda Bean Light Roast Whole Bean", "Coffee", "Rwanda Bean Coffee", 8.52, 14, 2, 12.00),
+      ("PDCT0005", "Rwanda Bean Decaf Whole Bean", "Coffee", "Rwanda Bean Coffee", 8.52, 14, 4, 12.00),
+      ("PDCT0006", "Rwanda Bean Espresso Whole Bean", "Coffee", "Rwanda Bean Coffee", 8.52, 14, 3, 12.00),
+      ("PDCT0007", "Rwanda Bean Light Roast Ground", "Coffee", "Rwanda Bean Coffee", 8.52, 14, 1, 12.00);
 
 -- It is useful to have a reference customer to build off of to test my application. Therefore, I will
 -- Manually add myself here to get the framework started.
 INSERT INTO customers
 VALUES('CU0001', 'Billy', 'Hayes', 'in_person', NULL, '123 main st. 72372, Conway, AR', "medium roast, dark roast, whole bean");
-
-SELECT * FROM customers
