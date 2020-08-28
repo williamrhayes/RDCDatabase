@@ -13,7 +13,7 @@ def main():
     mydb = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='password',
+        password='ratehufapacc',
         database='rdc'
     )
 
@@ -28,7 +28,8 @@ def main():
     # updating data for employees, business_connections,
     # or met_with
 
-    update_customers(c, df_dict)
+    update_customers(mydb, c, df_dict)
+    update_business_expenses(mydb, c, df_dict)
 
 
 # This function returns a dictionary of pandas dataframes based
@@ -37,127 +38,109 @@ def build_dataframes(input_file):
     return pd.read_excel(input_file, sheet_name=['Inventory','Transactions','Costs',
                                                  'Anticipated Costs','Customer Requests','Margins'])
 
-def update_orders(c, df_dict):
-    df_transactions = df_dict['Transactions']
-
-
-def update_customers(c, df_dict):
-    # Checks for new customers in our database!
+# Checks for new customers to add to our SQL database
+def update_customers(mydb, c, df_dict):
     # Check our pre-existing data
     c.execute('SELECT * FROM customers')
 
-    # Use list comprehension to find the data
-    # we currently have to build up a list of
-    # current customers
+    # Use list comprehension to show us which
+    # customers are already in our SQL database
     present_data = [row for row in c.fetchall()]
     current_customers = [(row[1] + row[2]).lower() for row in present_data]
+
+    # Extract valuable information from the
+    # 'Transactions' page of our SQL database
     df_transactions = df_dict['Transactions']
     df_transactions = df_transactions.drop([0,1])
 
     # Add new customers to our database!
+    new_customers = []
     for index, row in df_transactions.iterrows():
-        name_list = row['Unnamed: 1'].split(' ')
-        name_string = (name_list[0] + name_list[-1]).lower()
+        customer_name_list = list(filter(None, row['Unnamed: 1'].split(' ')))
+        name_string = (customer_name_list[0] + customer_name_list[-1]).lower()
         if name_string not in current_customers:
-            customer_id = "CU" + f"{(len(current_customers)+1):04d}"
+            customer_id = 'CU' + f'{(len(current_customers)+1):04d}'
             current_customers.append(name_string)
-            customer_name = list(filter(None, row['Unnamed: 1'].split(' ')))
-            first_name = customer_name[0]
-            last_name = customer_name[-1]
+
+            first_name = customer_name_list[0]
+            last_name = customer_name_list[-1]
 
             values = [customer_id, first_name, last_name]
 
             if pd.notnull(row['Unnamed: 2']):
                 values.append(row['Unnamed: 2'])
             else:
-                values.append("")
+                values.append(None)
             if pd.notnull(row['Unnamed: 3']):
                 values.append(row['Unnamed: 3'])
             else:
-                values.append("")
+                values.append(None)
             if pd.notnull(row['Unnamed: 4']):
                 values.append(row['Unnamed: 4'])
             else:
-                values.append("")
-            values.append('') # User can specify preferences on request.
+                values.append(None)
+            values.append(None) # User can specify preferences on request.
+            new_customers.append(tuple(values))
 
-            insert_to_SQL(c, "customers", tuple(values))
+    insert_to_SQL(mydb, c, 'customers', new_customers)
 
-
-def update_business_expenses(df_list):
-    pass
-
-def update_paid_for(df_list):
-    pass
-
-def update_sold_by(df_list):
-    pass
-
-def update_orders(df_list):
-    pass
-
-def update_employees(df_list):
-    pass
-
-def update_met_with(df_list):
-    pass
-
-def update_business_connections(df_list):
-    pass
-
-def update_products(c, df_dict):
-
-    df_transactions = df_dict['Transactions']
-    df_inventory = df_dict['Inventory']
-    df_margins = df_dict['Margins']
-    df_costs = df_dict['Costs']
-
-    # Check our pre-existing data
-    c.execute('SELECT * FROM products')
-
-    # Use list comprehension to find the data
-    # we currently have
+# Checks for new business_expenses to add to our SQL database
+def update_business_expenses(mydb, c, df_dict):
+    # Check our pre-existing SQL database to
+    # see if entries are already there
+    c.execute('SELECT * FROM business_expenses')
     present_data = [row for row in c.fetchall()]
+    current_expenses = [(str(row[4]) + row[1] + row[2]).lower()
+                        for row in present_data]
+    # Gather and clean data from our Excel Spreadsheet
+    df_expenses = df_dict['Costs']
+    df_expenses = (df_expenses.drop([0,1]))
+    df_expenses.columns = ['DatePurchased', 'Supplier', 'ItemName',
+                           'ItemPrice', 'ItemQuantity', 'ItemSize',
+                           'ShippingCost', 'PPU', 'TotalCost', 'Notes']
 
-    # If no data exists, it is time to add new data!
-    if len(present_data) == 0:
+    # Add new data to our SQL database from our Excel Spreadsheet
+    new_expenses = []
+    for index, row in df_expenses.iterrows():
+        expense_tag = (str(row['DatePurchased'].date()) + row['Supplier'] + row['ItemName']
+                       ).lower()
 
-        # First, clean the data
-        bad_labels = [df_inventory.columns[0]] + list(df_inventory.columns[5:])
-        df_inventory = (df_inventory.drop(bad_labels, axis='columns'))
-        col_names = list(df_inventory.iloc[1])
-        df_inventory = df_inventory.drop([0,1])
-        df_inventory.columns = col_names
-        df_names = df_inventory['Producer'] + " " + df_inventory['Product Type']
-        names_list = list(df_names.drop_duplicates())
-        products = {}
-        for name_value in range(len(names_list)):
-            key = "PDCT" + f"{(name_value+1):04d}"
-            products[key] = [names_list[name_value]]
-            products[key] += []
+        if expense_tag not in current_expenses:
+            expense_id = 'EXP' + f'{(len(current_expenses)+1):04d}'
+            current_expenses.append(expense_tag)
+            expense = [expense_id, row['Supplier'], row['ItemName'],
+                       row['TotalCost'], str(row['DatePurchased'].date()), None]
 
-        print(df_inventory)
+            new_expenses.append(tuple(expense))
 
-    # If data DOES exist, we should only append new data
+    insert_to_SQL(mydb, c, 'business_expenses', new_expenses)
+
+
+def update_orders(mydb, c, df_dict):
+    pass
+
+
+# This function takes a list of tuples and inserts them
+# directly into the RDC SQL database
+def insert_to_SQL(mydb, cursor, table_name, values):
+    if len(values) == 0:
+        print("No new " + table_name + ".")
     else:
-        highest_key = present_data[-1][0]
+        cmnd = "INSERT INTO " + table_name + " " \
+                "VALUES (" + "%s,"*(len(values[0])-1) + "%s);"
+        cursor.executemany(cmnd, values)
+        mydb.commit()
+        print(cursor.rowcount, "new rows added to " + table_name + ".")
 
-    return None
-
-def insert_to_SQL(cursor, table_string, value):
-    cmnd = "INSERT INTO products(customer_id, first_name, " \
-           "last_name, contact_type, contact_info, " \
-           "shipping_address, preferences)" \
-           "VALUES (" + "%s,"*(len(value)-1) + "%s);"
-    print(cmnd)
-    cursor.execute(cmnd, value)
 
 main()
 
 
-# Accomplished with reference to
+# Accomplished with reference to:
+
 # https://www.youtube.com/watch?v=71zkSuzkJrw (pandas file extraction)
 # https://www.w3schools.com/python/python_mysql_getstarted.asp (connection to mySQL database)
 # https://stackoverflow.com/questions/11339210/how-to-get-integer-values-from-a-string-in-python (extracting integers from strings using re)
 # https://stackoverflow.com/questions/134934/display-number-with-leading-zeros (Placing leading zeros in a number)
 # https://www.youtube.com/watch?v=kJkNRbKzs6w (How to concatenate dataframe strings)
+# https://mysql.az/tag/error-1054-42s22-unknown-column-in-field-list/ Used to fix error 1054, single quotes are required for all strings!
