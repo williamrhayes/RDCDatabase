@@ -151,15 +151,29 @@ just add to directly in SQL. I tried setting up an automated system
 for keeping track of products, but this was just too much effort to
 keep track of 7 different products.
 
-I decided that creating our customer database would drastically
-benefit from automation, and found out that we have about ~70 total
-unique customers. My updates will be featured in the
+I decided that automating the migration of data for the
+
+customers,
+business_expenses, and
+orders
+
+tables would be the most efficient use of my time here. These are
+rows of data that are frequently added to on a semi-regular basis.
+
+The first version of this script is labeled the 
 
 "py_2_SQL.py"
 
-Python script!
+Python script.
 
 ---------------------------------------------------------------
 *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** 
 Step 5: Maintaining our SQL database
 *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** 
+
+As Malcom Hamer teaches in his book, normalized databases can cause
+"marooned data". Data is "marooned" when data is deleted from one 
+table, but other tables referencing this data have not been deleted.
+
+The final step for this project will be to build a "housekeeping"
+program that can remove this marooned data from our database!
