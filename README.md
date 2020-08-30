@@ -168,12 +168,36 @@ Python script.
 
 ---------------------------------------------------------------
 *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** 
-Step 5: Maintaining our SQL database
+Step 5: Finalizing our Database!
 *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** 
 
-As Malcom Hamer teaches in his book, normalized databases can cause
+As Malcom Hamer teaches in his book normalized databases can cause
 "marooned data". Data is "marooned" when data is deleted from one 
-table, but other tables referencing this data have not been deleted.
+table but other tables referencing this data have not been deleted.
 
-The final step for this project will be to build a "housekeeping"
-program that can remove this marooned data from our database!
+While I was going to construct a "housekeeping" script to delete
+irrelevant data I found that it might not work well in our database.
+
+Every relationship in the our database is a historical table which is 
+used to keep records for our company. This means that even if a row 
+in a certain entity table is deleted, it does not mean we should delete
+all of the data associated with that entity.
+
+For instance, say we sell out of a product and no longer need that
+product in our database. Even if we delete this product entity from 
+the "products" table in our database, we wouldn't want to delete 
+the information associated with this product from our "orders" table.
+If a customer bought product "A" and wanted a recipt for their 
+order after "A" was deleted from our database, we would 
+still want to have that row of information in our "orders" table.
+
+-------------------------------------------------------------------
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Step 6: Using our SQL Database
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+Our SQL database is now migrated and ready for use! If the data ever
+needs to be updated, the py_2_SQL script can be run on a more 
+recent version of the budget Excel file and new data will be added
+to our SQL database.
+
